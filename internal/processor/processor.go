@@ -32,6 +32,9 @@ func ProcessContent(s []string) []string {
 		case "(hex)":
 			HexToDecimal(&s[i-1])
 			stringToDel[i] = true
+		case "(bin)":
+			BinToDecimal(&s[i-1])
+			stringToDel[i] = true
 		}
 	}
 

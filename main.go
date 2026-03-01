@@ -14,7 +14,7 @@ func main() {
 		fmt.Println("Not enough or too many argument! This program requires two CLI arguments to run properly.")
 		os.Exit(1)
 	}
-	result := processor.ReadFile(arg[0])
-	finalResult := processor.ProcessContent(result)
-	fmt.Println(finalResult)
+	text := processor.ReadFile(arg[0])
+	result := processor.ProcessContent(text)
+	fmt.Println(result)
 }

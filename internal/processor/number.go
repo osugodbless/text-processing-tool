@@ -13,6 +13,10 @@ func HexToDecimal(s *string) {
 	*s = strconv.Itoa(int(n))
 }
 
-func BinToDecimal(s string) {
-
+func BinToDecimal(s *string) {
+	n, err := strconv.ParseInt(*s, 2, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	*s = strconv.Itoa(int(n))
 }
