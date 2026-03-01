@@ -15,5 +15,6 @@ func main() {
 		os.Exit(1)
 	}
 	result := processor.ReadFile(arg[0])
-	fmt.Println(result)
+	finalResult := processor.ProcessContent(result)
+	fmt.Println(finalResult)
 }

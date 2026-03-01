@@ -23,3 +23,24 @@ func ReadFile(str string) []string {
 
 	return sliceFileStr
 }
+
+func ProcessContent(s []string) []string {
+	stringToDel := make(map[int]bool)
+
+	for i, str := range s {
+		switch str {
+		case "(hex)":
+			HexToDecimal(&s[i-1])
+			stringToDel[i] = true
+		}
+	}
+
+	var result []string
+	for i, str := range s {
+		if !stringToDel[i] {
+			result = append(result, str)
+		}
+	}
+
+	return result
+}
