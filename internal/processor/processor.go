@@ -35,6 +35,13 @@ func ProcessContent(s []string) []string {
 		case "(bin)":
 			BinToDecimal(&s[i-1])
 			stringToDel[i] = true
+		case "(up)":
+			Uppercase(&s[i-1])
+			stringToDel[i] = true
+		case "(low)":
+			Lowercase(&s[i-1])
+			stringToDel[i] = true
+		case "(cap)":
 		}
 	}
 
