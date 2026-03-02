@@ -17,5 +17,5 @@ func main() {
 	rawText := processor.ReadFile(arg[0])
 	processedText := processor.ProcessContent(rawText)
 	fmt.Println(processedText)
-	fmt.Println(processor.MatchPatternLower("(low, 3)"))
+
 }

@@ -14,7 +14,7 @@ func ReadFile(str string) []string {
 		log.Fatal("Unable to read file")
 	}
 	fileStr := string(file)
-	re := regexp.MustCompile(`\([^)]+\)|\S+`)
+	re := regexp.MustCompile(`\([^)]+\)|[.,!?:;]+|'[^']+'|\w+`)
 	matches := re.FindAll([]byte(fileStr), -1)
 
 	var sliceFileStr []string
@@ -81,8 +81,22 @@ func ProcessContent(s []string) []string {
 				num--
 			}
 			stringToDel[i] = true
-		case ".", ",", "!", "?", ":", ";":
-
+		case MatchPatternPunctuation(str):
+			s[i-1] += s[i]
+			stringToDel[i] = true
+		case MatchPatternQuote(str):
+			Quote(&s[i])
+		case "a", "A":
+			if i < len(s)-1 {
+				if IsVowel(&s[i+1]) {
+					if s[i] == "a" {
+						s[i] = "an"
+					}
+					if s[i] == "A" {
+						s[i] = "An"
+					}
+				}
+			}
 		}
 	}
 
