@@ -82,7 +82,11 @@ func ProcessContent(s []string) []string {
 			}
 			stringToDel[i] = true
 		case MatchPatternPunctuation(str):
-			s[i-1] += s[i]
+			if s[i-1] == "(cap)" || s[i-1] == "(low)" || s[i-1] == "(up)" || s[i-1] == MatchPatternUpper(s[i-1]) || s[i-1] == MatchPatternCap(s[i-1]) || s[i-1] == MatchPatternLower(s[i-1]) {
+				s[i-2] += s[i]
+			} else {
+				s[i-1] += s[i]
+			}
 			stringToDel[i] = true
 		case MatchPatternQuote(str):
 			Quote(&s[i])
