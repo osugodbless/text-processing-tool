@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
+	"unicode"
 )
 
 func ReadFile(str string) []string {
@@ -12,16 +14,33 @@ func ReadFile(str string) []string {
 		log.Fatal("Unable to read file")
 	}
 	fileStr := string(file)
-	re := regexp.MustCompile(`\(+[^)]+\)|\S+`)
+	re := regexp.MustCompile(`\([^)]+\)|\S+`)
 	matches := re.FindAll([]byte(fileStr), -1)
 
 	var sliceFileStr []string
 
 	for _, item := range matches {
-		sliceFileStr = append(sliceFileStr, string(item))
+		if len(item) > 0 {
+			sliceFileStr = append(sliceFileStr, string(item))
+		}
 	}
 
 	return sliceFileStr
+}
+
+func ExtractDigit(s string) int {
+	r := []rune(s)
+	n := ""
+	for _, ch := range r {
+		if unicode.IsDigit(ch) {
+			n += string(ch)
+		}
+	}
+	if n == "" {
+		return 1
+	}
+	num, _ := strconv.Atoi(n)
+	return num
 }
 
 func ProcessContent(s []string) []string {
@@ -35,13 +54,35 @@ func ProcessContent(s []string) []string {
 		case "(bin)":
 			BinToDecimal(&s[i-1])
 			stringToDel[i] = true
-		case "(up)":
-			Uppercase(&s[i-1])
+		case "(up)", MatchPatternUpper(str):
+			num := ExtractDigit(str)
+			n := i - 1
+			for num > 0 {
+				Uppercase(&s[n])
+				n--
+				num--
+			}
 			stringToDel[i] = true
-		case "(low)":
-			Lowercase(&s[i-1])
+		case "(low)", MatchPatternLower(str):
+			num := ExtractDigit(str)
+			n := i - 1
+			for num > 0 {
+				Lowercase(&s[n])
+				n--
+				num--
+			}
 			stringToDel[i] = true
-		case "(cap)":
+		case "(cap)", MatchPatternCap(str):
+			num := ExtractDigit(str)
+			n := i - 1
+			for num > 0 {
+				Capitalize(&s[n])
+				n--
+				num--
+			}
+			stringToDel[i] = true
+		case ".", ",", "!", "?", ":", ";":
+
 		}
 	}
 
