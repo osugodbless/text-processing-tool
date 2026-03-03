@@ -5,6 +5,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
@@ -14,7 +15,7 @@ func ReadFile(str string) []string {
 		log.Fatal("Unable to read file")
 	}
 	fileStr := string(file)
-	re := regexp.MustCompile(`\([^)]+\)|[.,!?:;]+|'[^']+'|\w+`)
+	re := regexp.MustCompile(`\([^)]+\)|[.,!?:;]+|'|\w+`)
 	matches := re.FindAll([]byte(fileStr), -1)
 
 	var sliceFileStr []string
@@ -54,38 +55,33 @@ func ProcessContent(s []string) []string {
 		case "(bin)":
 			BinToDecimal(&s[i-1])
 			stringToDel[i] = true
-		case "(up)", MatchPatternUpper(str):
+		case "(up)", "(low)", "(cap)", MatchPatternCase(str):
+			r := []rune(str)
 			num := ExtractDigit(str)
 			n := i - 1
 			for num > 0 {
-				Uppercase(&s[n])
-				n--
-				num--
-			}
-			stringToDel[i] = true
-		case "(low)", MatchPatternLower(str):
-			num := ExtractDigit(str)
-			n := i - 1
-			for num > 0 {
-				Lowercase(&s[n])
-				n--
-				num--
-			}
-			stringToDel[i] = true
-		case "(cap)", MatchPatternCap(str):
-			num := ExtractDigit(str)
-			n := i - 1
-			for num > 0 {
-				Capitalize(&s[n])
+				if str == "(up)" || (r[1] == 'u' && r[2] == 'p') {
+					Uppercase(&s[n])
+				}
+				if str == "(low)" || (r[1] == 'l' && r[2] == 'o') {
+					Lowercase(&s[n])
+				}
+				if str == "(cap)" || (r[1] == 'c' && r[2] == 'a') {
+					Capitalize(&s[n])
+				}
+
 				n--
 				num--
 			}
 			stringToDel[i] = true
 		case MatchPatternPunctuation(str):
-			s[i-1] += s[i]
+			if s[i-1] == "(cap)" || s[i-1] == "(low)" || s[i-1] == "(up)" || s[i-1] == MatchPatternCase(s[i-1]) {
+				s[i-2] += s[i]
+			} else {
+				s[i-1] += s[i]
+			}
 			stringToDel[i] = true
-		case MatchPatternQuote(str):
-			Quote(&s[i])
+
 		case "a", "A":
 			if i < len(s)-1 {
 				if IsVowel(&s[i+1]) {
@@ -101,10 +97,28 @@ func ProcessContent(s []string) []string {
 	}
 
 	var result []string
+	openQuote := false
+	tempStr := ""
+
 	for i, str := range s {
 		if !stringToDel[i] {
-			result = append(result, str)
+			if str != "'" && !openQuote {
+				result = append(result, str)
+			} else if str == "'" && !openQuote {
+				tempStr += str
+				openQuote = true
+			} else if str != "'" && openQuote {
+				tempStr = tempStr + str + " "
+			} else if str == "'" && openQuote {
+				tempStr = strings.TrimSpace(tempStr)
+				tempStr += str
+				result = append(result, tempStr)
+				tempStr = ""
+				openQuote = false
+			}
+
 		}
+
 	}
 
 	return result
