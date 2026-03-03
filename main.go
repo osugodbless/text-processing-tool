@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-reloaded/internal/processor"
+	"go-reloaded/processor"
 	"log"
 	"os"
 )
@@ -15,8 +15,8 @@ func main() {
 		fmt.Println("Not enough or too many argument! This program requires two CLI arguments to run properly.")
 		os.Exit(1)
 	}
+
 	rawText := processor.ReadFile(arg[0])
-	fmt.Println(rawText)
 	processedText := processor.ProcessContent(rawText)
 
 	var outputStr string
