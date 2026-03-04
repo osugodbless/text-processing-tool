@@ -14,6 +14,9 @@ func Uppercase(s *string) {
 }
 
 func Capitalize(s *string) {
+	if *s == "" {
+		return
+	}
 	newS := *s
 	r := []rune(newS)
 	r[0] = unicode.ToUpper(r[0])
