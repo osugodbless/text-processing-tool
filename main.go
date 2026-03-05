@@ -16,20 +16,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	rawText := processor.ReadFile(arg[0])
-	processedText := processor.ProcessContent(rawText)
-
-	var outputStr string
-	for i, item := range processedText {
-		outputStr += item
-		if i == 0 || i%(len(processedText)-1) != 0 {
-			outputStr += " "
-		}
-	}
-
-	err := os.WriteFile("testdata/"+arg[1], []byte(outputStr), 0644)
+	rawText, err := processor.ReadFile(arg[0])
 	if err != nil {
-		log.Fatal("Unable to write to file:", err)
+		log.Fatal("Unable to read file:", err)
 	}
+
+	processedText := processor.ProcessContent(rawText)
+	processor.WriteToFile(processedText, arg[1])
 
 }

@@ -1,14 +1,13 @@
 package processor
 
 import (
-	"log"
 	"strconv"
 )
 
 func HexToDecimal(s *string) {
 	n, err := strconv.ParseInt(*s, 16, 64)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 	*s = strconv.Itoa(int(n))
 }
@@ -16,7 +15,7 @@ func HexToDecimal(s *string) {
 func BinToDecimal(s *string) {
 	n, err := strconv.ParseInt(*s, 2, 64)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 	*s = strconv.Itoa(int(n))
 }

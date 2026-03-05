@@ -1,48 +1,8 @@
 package processor
 
 import (
-	"log"
-	"os"
-	"regexp"
-	"strconv"
 	"strings"
-	"unicode"
 )
-
-func ReadFile(str string) []string {
-	file, err := os.ReadFile("testdata/" + str)
-	if err != nil {
-		log.Fatal("Unable to read file")
-	}
-	fileStr := string(file)
-	re := regexp.MustCompile(`\([^)]+\)|[.,!?:;]+|'|\w+`)
-	matches := re.FindAll([]byte(fileStr), -1)
-
-	var sliceFileStr []string
-
-	for _, item := range matches {
-		if len(item) > 0 {
-			sliceFileStr = append(sliceFileStr, string(item))
-		}
-	}
-
-	return sliceFileStr
-}
-
-func ExtractDigit(s string) int {
-	r := []rune(s)
-	n := ""
-	for _, ch := range r {
-		if unicode.IsDigit(ch) {
-			n += string(ch)
-		}
-	}
-	if n == "" {
-		return 1
-	}
-	num, _ := strconv.Atoi(n)
-	return num
-}
 
 func ProcessContent(s []string) []string {
 	stringToDel := make(map[int]bool)
